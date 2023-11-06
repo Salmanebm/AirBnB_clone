@@ -12,6 +12,6 @@ class BaseModel:
         """
         Instance initialization
         """
-        self.id = uuid.uuid4()
+        self.id = str(uuid.uuid4())
         self.create_at = datetime.now()
         self.update_at = datetime.now()
