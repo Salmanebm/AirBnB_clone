@@ -11,12 +11,19 @@ class BaseModel:
     def __init__(self, *args, **kwargs):
         """
         Instance initialization
+        - If the instance is new: it creates new instance with its new attrs
+        - If the instance has previousely created data in the database,
+            it's restored again.
         """
         if len(kwargs) != 0:
             for key, value in kwargs.items():
                 if key == '__class__':
                     continue
-                setattr(self, key, value)
+                elif key == 'created_at' or key == 'updated_at':
+                    setattr(self, key,
+                            datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f"))
+                else:
+                    setattr(self, key, value)
         else:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
@@ -27,18 +34,20 @@ class BaseModel:
         Customized string representation of the class
         :return: None
         """
-        print(f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}")
+        return f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}"
 
     def save(self):
         """
         updates the public instance attribute
-        updated_at with the current datetime
+        updated_at with the datetime during any change
         :return: None
         """
         self.updated_at = datetime.now()
 
     def to_dict(self):
         """
+        converts all attributes to a dectionary to be converted to JSON
+        representation.
         :returns: dictionary containing all keys/values of __dict__
         """
         self.__dict__["__class__"] = str(self.__class__.__name__)
@@ -48,21 +57,24 @@ class BaseModel:
 
 
 """ *********** TEST ************* """
-obj1 = BaseModel(name="Alice", age=25, __class_="Adel")
-print("Attributes from kwargs:")
-print(obj1.__dict__)  # Print the object's attributes
+my_model = BaseModel()
+my_model.name = "My_First_Model"
+my_model.my_number = 89
+print(f"line 1: {my_model.id}")
+print(f"line 2: {my_model}")
+print(f"line 3: {type(my_model.created_at)}")
+print("--")
+my_model_json = my_model.to_dict()
+print(f"line 4: {my_model_json}")
+print("JSON of my_model:")
+for key in my_model_json.keys():
+    print("\t{}: ({}) - {}".format(key, type(my_model_json[key]), my_model_json[key]))
 
-# Create an instance without any kwargs (default attributes will be used)
-obj2 = BaseModel()
-print("\nDefault attributes:")
-print(obj2.__dict__)  # Print the object's attributes
+print("--")
+my_new_model = BaseModel(**my_model_json)
+print(my_new_model.id)
+print(my_new_model)
+print(type(my_new_model.created_at))
 
-# Access specific attributes
-print(f"\nName: {obj1.name}")
-print(f"Age: {obj1.age}")
-
-# Access default attributes
-print(f"\nID: {obj2.id}")
-print(f"Created At: {obj2.created_at}")
-print(f"Updated At: {obj2.updated_at}")
-
+print("--")
+print(my_model is my_new_model)
