@@ -11,13 +11,17 @@ class BaseModel:
     def __init__(self, *args, **kwargs):
         """
         Instance initialization
+        - If the instance is new: it creates new instance with its new attrs
+        - If the instance has previousely created data in the database,
+            it's restored again.
         """
         if len(kwargs) != 0:
             for key, value in kwargs.items():
                 if key == '__class__':
                     continue
                 elif key == 'created_at' or key == 'updated_at':
-                    setattr(self, key, datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f"))
+                    setattr(self, key,
+                            datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f"))
                 else:
                     setattr(self, key, value)
         else:
@@ -35,13 +39,15 @@ class BaseModel:
     def save(self):
         """
         updates the public instance attribute
-        updated_at with the current datetime
+        updated_at with the datetime during any change
         :return: None
         """
         self.updated_at = datetime.now()
 
     def to_dict(self):
         """
+        converts all attributes to a dectionary to be converted to JSON
+        representation.
         :returns: dictionary containing all keys/values of __dict__
         """
         self.__dict__["__class__"] = str(self.__class__.__name__)
