@@ -28,19 +28,14 @@ class FileStorage:
         obj_key = "{}.{}".format(obj.__class__.__name__, obj.id)
         FileStorage.__objects[obj_key] = obj
 
-    # def save(self):
-    #     """
-    #     Serializes __objects to the JSON file (path: __file_path).
-    #     """
-    #     with open(FileStorage.__file_path, 'w') as file:
-    #         json.dump(FileStorage.__objects, file)
-
     def save(self):
-        """Serialize __objects to the JSON file __file_path."""
-        odict = FileStorage.__objects
-        objdict = {obj: odict[obj].to_dict() for obj in odict.keys()}
-        with open(FileStorage.__file_path, "w") as f:
-            json.dump(objdict, f)
+        """
+        Serializes __objects to the JSON file (path: __file_path).
+        """
+        all_obj = FileStorage.__objects
+        new_all_obj = {obj: all_obj[obj].to_dict() for obj in all_obj.keys()}
+        with open(FileStorage.__file_path, "w") as file:
+            json.dump(new_all_obj, file)
 
     def reload(self):
         """
@@ -48,12 +43,12 @@ class FileStorage:
         (only if the JSON file (__file_path) exists
         """
         try:
-            with open(FileStorage.__file_path) as file:
+            with open("FileStorage.__file_path") as file:
                 all_objects = json.load(file)
                 for object_dict in all_objects.values():
                     class_name = object_dict["__class__"]
                     del object_dict["__class__"]
-                    new_object = eval(class_name)(**object_dict)
+                    new_object = eval((class_name)(**object_dict))
                     self.new(new_object)
         except FileNotFoundError:
             pass

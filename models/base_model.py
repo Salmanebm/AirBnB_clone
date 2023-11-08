@@ -53,11 +53,12 @@ class BaseModel:
 
     def to_dict(self):
         """
-        converts all attributes to a dectionary to be converted to JSON
+        converts all attributes to a dictionary to be converted to JSON
         representation.
         :returns: dictionary containing all keys/values of __dict__
         """
-        self.__dict__["__class__"] = str(self.__class__.__name__)
-        self.__dict__["created_at"] = str(self.created_at.isoformat())
-        self.__dict__["updated_at"] = str(self.updated_at.isoformat())
-        return self.__dict__
+        dict_copy = self.__dict__
+        dict_copy["__class__"] = str(self.__class__.__name__)
+        dict_copy["created_at"] = str(self.created_at.isoformat())
+        dict_copy["updated_at"] = str(self.updated_at.isoformat())
+        return dict_copy
