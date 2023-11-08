@@ -5,6 +5,9 @@ This module has the Base Model class
 from datetime import datetime
 import uuid
 
+import models
+from models import storage
+
 
 class BaseModel:
     """ Represents Base Model class. """
@@ -15,19 +18,22 @@ class BaseModel:
         - If the instance has previousely created data in the database,
             it's restored again.
         """
+        tform = "%Y-%m-%dT%H:%M:%S.%f"
+
+        self.id = str(uuid.uuid4())
+        self.created_at = datetime.now()
+        self.updated_at = datetime.now()
+
         if len(kwargs) != 0:
             for key, value in kwargs.items():
                 if key == '__class__':
                     continue
                 elif key == 'created_at' or key == 'updated_at':
-                    setattr(self, key,
-                            datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f"))
+                    self.__dict__[key] = datetime.strptime(value, tform)
                 else:
-                    setattr(self, key, value)
+                    self.__dict__[key] = value
         else:
-            self.id = str(uuid.uuid4())
-            self.created_at = datetime.now()
-            self.updated_at = datetime.now()
+            models.storage.new(self)
 
     def __str__(self):
         """
@@ -43,6 +49,7 @@ class BaseModel:
         :return: None
         """
         self.updated_at = datetime.now()
+        models.storage.save()
 
     def to_dict(self):
         """
@@ -54,27 +61,3 @@ class BaseModel:
         self.__dict__["created_at"] = str(self.created_at.isoformat())
         self.__dict__["updated_at"] = str(self.updated_at.isoformat())
         return self.__dict__
-
-
-""" *********** TEST ************* """
-my_model = BaseModel()
-my_model.name = "My_First_Model"
-my_model.my_number = 89
-print(f"line 1: {my_model.id}")
-print(f"line 2: {my_model}")
-print(f"line 3: {type(my_model.created_at)}")
-print("--")
-my_model_json = my_model.to_dict()
-print(f"line 4: {my_model_json}")
-print("JSON of my_model:")
-for key in my_model_json.keys():
-    print("\t{}: ({}) - {}".format(key, type(my_model_json[key]), my_model_json[key]))
-
-print("--")
-my_new_model = BaseModel(**my_model_json)
-print(my_new_model.id)
-print(my_new_model)
-print(type(my_new_model.created_at))
-
-print("--")
-print(my_model is my_new_model)

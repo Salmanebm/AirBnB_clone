@@ -25,15 +25,22 @@ class FileStorage:
         """
         Sets in __objects the obj with key <obj class name>.id
         """
-        new_obj = obj.__class__.__name
-        FileStorage.__objects[f"{new_obj}.{obj.id}"] = obj
+        obj_key = "{}.{}".format(obj.__class__.__name__, obj.id)
+        FileStorage.__objects[obj_key] = obj
+
+    # def save(self):
+    #     """
+    #     Serializes __objects to the JSON file (path: __file_path).
+    #     """
+    #     with open(FileStorage.__file_path, 'w') as file:
+    #         json.dump(FileStorage.__objects, file)
 
     def save(self):
-        """
-        Serializes __objects to the JSON file (path: __file_path).
-        """
-        with open(FileStorage.__file_path, 'w', encoding="utf-8") as file:
-            file.write(json.dumps(FileStorage.__objects))
+        """Serialize __objects to the JSON file __file_path."""
+        odict = FileStorage.__objects
+        objdict = {obj: odict[obj].to_dict() for obj in odict.keys()}
+        with open(FileStorage.__file_path, "w") as f:
+            json.dump(objdict, f)
 
     def reload(self):
         """
@@ -41,7 +48,12 @@ class FileStorage:
         (only if the JSON file (__file_path) exists
         """
         try:
-            with open(FileStorage.__file_path, 'r', encoding="utf-8") as file:
-                FileStorage.__objects = json.load(file)
+            with open(FileStorage.__file_path) as file:
+                all_objects = json.load(file)
+                for object_dict in all_objects.values():
+                    class_name = object_dict["__class__"]
+                    del object_dict["__class__"]
+                    new_object = eval(class_name)(**object_dict)
+                    self.new(new_object)
         except FileNotFoundError:
             pass
