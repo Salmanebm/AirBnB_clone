@@ -15,7 +15,7 @@ class BaseModel:
         """
         Instance initialization
         - If the instance is new: it creates new instance with its new attrs
-        - If the instance has previousely created data in the database,
+        - If the instance has previously created data in the database,
             it's restored again.
         """
         tform = "%Y-%m-%dT%H:%M:%S.%f"
