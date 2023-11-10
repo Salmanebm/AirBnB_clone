@@ -3,6 +3,7 @@
 This module has FileStorage class
 """
 import json
+from models.base_model import BaseModel
 
 
 class FileStorage:
@@ -32,10 +33,11 @@ class FileStorage:
         """
         Serializes __objects to the JSON file (path: __file_path).
         """
-        all_obj = FileStorage.__objects
-        new_all_obj = {obj: all_obj[obj].to_dict() for obj in all_obj.keys()}
+        serialized_obj = {}
+        for key in self.__objects:
+            serialized_obj[key] = self.__objects[key].to_dict()
         with open(FileStorage.__file_path, "w") as file:
-            json.dump(new_all_obj, file)
+            json.dump(serialized_obj, file)
 
     def reload(self):
         """
@@ -43,12 +45,10 @@ class FileStorage:
         (only if the JSON file (__file_path) exists
         """
         try:
-            with open("FileStorage.__file_path") as file:
+            with open(FileStorage.__file_path, 'r') as file:
                 all_objects = json.load(file)
-                for object_dict in all_objects.values():
-                    class_name = object_dict["__class__"]
-                    del object_dict["__class__"]
-                    new_object = eval((class_name)(**object_dict))
-                    self.new(new_object)
+                for obj_dict in all_objects:
+                    class_name = eval(all_objects[obj_dict]["__class__"])
+                    self.new(class_name(**all_objects[obj_dict]))
         except FileNotFoundError:
             pass
