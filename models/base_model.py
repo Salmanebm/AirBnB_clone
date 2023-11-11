@@ -27,7 +27,7 @@ class BaseModel:
             for key, value in kwargs.items():
                 if key == '__class__':
                     continue
-                elif key == 'created_at' or key == 'updated_at':
+                elif key in ['created_at', 'updated_at']:
                     self.__dict__[key] = datetime.strptime(value, tform)
                 else:
                     self.__dict__[key] = value
@@ -58,6 +58,8 @@ class BaseModel:
         """
         dict_copy = self.__dict__
         dict_copy["__class__"] = str(self.__class__.__name__)
-        dict_copy["created_at"] = str(self.created_at.isoformat())
-        dict_copy["updated_at"] = str(self.updated_at.isoformat())
+        if isinstance(dict_copy["created_at"], datetime):
+            dict_copy["created_at"] = str(self.created_at.isoformat())
+        if isinstance(dict_copy["updated_at"], datetime):
+            dict_copy["updated_at"] = str(self.updated_at.isoformat())
         return dict_copy
