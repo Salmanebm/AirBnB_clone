@@ -4,6 +4,7 @@ This module has FileStorage class
 """
 import json
 from models.base_model import BaseModel
+from models.user import User
 
 
 class FileStorage:
@@ -48,7 +49,7 @@ class FileStorage:
             with open(FileStorage.__file_path, 'r') as file:
                 all_objects = json.load(file)
                 for obj_dict in all_objects:
-                    class_name = eval(all_objects[obj_dict]["__class__"])
-                    self.new(class_name(**all_objects[obj_dict]))
+                    class_name = all_objects[obj_dict]["__class__"]
+                    self.new(eval(class_name)(**all_objects[obj_dict]))
         except FileNotFoundError:
             pass
