@@ -23,6 +23,8 @@ class BaseModel:
 
     def save(self):
         self.updated_at = datetime.now()
+        self.storage.new(self)
+        self.storage.save()
 
     def to_dict(self):
         instance_dict = self.__dict__.copy()
@@ -34,4 +36,3 @@ class BaseModel:
     def __str__(self):
         class_name = self.__class__.__name__
         return "[{}] ({}) {}".format(class_name, self.id, self.__dict__)
-
