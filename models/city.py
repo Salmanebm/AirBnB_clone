@@ -2,6 +2,7 @@
 """
 This module has the City class
 """
+from models.base_model import BaseModel
 
 
 
