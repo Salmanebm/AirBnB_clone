@@ -3,6 +3,7 @@
 This module has the entry point to the command interpreter
 """
 import cmd
+import sys
 
 
 class HBBNCommand(cmd.Cmd):
@@ -17,6 +18,12 @@ class HBBNCommand(cmd.Cmd):
         Quit command to quit the program
         """
         return True
+
+    def do_EOF(self, arg):
+        """
+        EOF to exit the program
+        """
+        sys.exit()
 
     def emptyline(self):
         """
