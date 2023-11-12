@@ -4,6 +4,7 @@ This module has the entry point to the command interpreter
 """
 import cmd
 import sys
+from models.base_model import BaseModel
 
 
 class HBBNCommand(cmd.Cmd):
@@ -30,6 +31,21 @@ class HBBNCommand(cmd.Cmd):
         Handles empty line + ENTER to not print anything
         """
         return False
+
+    def do_create(self, arg):
+        """
+        Creates a new instance of BaseModel, saves it (to the JSON file)
+        and prints the id.
+        """
+        if arg:
+            if arg == "BaseModel":
+                base_model_instance = BaseModel()
+                base_model_instance.save()
+                print(base_model_instance.id)
+            else:
+                print("** class doesn't exist **")
+        else:
+            print("** class name missing **")
 
 
 if __name__ == "__main__":
