@@ -10,25 +10,13 @@ class HBBNCommand(cmd.Cmd):
     Represents command interpreter class
     """
     prompt = '(hbnb) '
+    misc_header = 'This is misc_header test'
 
-    def do_help(self, arg):
+    def do_quit(self, arg):
         """
-        Represents the help command
+        Quit command to quit the program
         """
-        commands = {
-            "EOF": "end of file",
-            "help": "help command to show description of each command",
-            "quit": "Quit command to exit the program"
-        }
-
-        if arg:
-            print(f"{commands[arg]}\n")
-        else:
-            print("\n" + "Documented commands (type help <topic>):")
-            print("========================================")
-            for command in commands.keys():
-                print(f"{command}", end="  ")
-            print("\n")
+        return True
 
     def emptyline(self):
         """
