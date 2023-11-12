@@ -6,6 +6,7 @@ import cmd
 import json
 import sys
 from models.base_model import BaseModel
+from models.user import User
 from models import storage
 
 
@@ -49,15 +50,16 @@ class HBNBCommand(cmd.Cmd):
         Creates a new instance of BaseModel, saves it (to the JSON file)
         and prints the id.
         """
-        if arg:
-            if arg in HBNBCommand.__classes:
-                base_model_instance = eval(arg())
-                base_model_instance.save()
-                print(base_model_instance.id)
-            else:
-                print("** class doesn't exist **")
-        else:
+        if not arg:
             print("** class name missing **")
+            return
+        if arg not in HBNBCommand.__classes:
+            print("** class doesn't exist **")
+            return
+
+        arg_instance = globals()[arg]()
+        arg_instance.save()
+        print(arg_instance.id)
 
     def do_show(self, line):
         """
@@ -99,7 +101,7 @@ class HBNBCommand(cmd.Cmd):
             return
 
         object_key = f"{args[0]}.{args[1]}"
-        if object_key not in storage.all().keys():
+        if object_key not in storage.all():
             print("** no instance found **")
         else:
             del storage.all()[object_key]
@@ -154,9 +156,9 @@ class HBNBCommand(cmd.Cmd):
         for key, value in all_objects.items():
             if key in obj_to_update.__class__.__dict__.keys():
                 value_type = type(obj_to_update.__class__.__dict__[key])
-                setattr(obj_to_update, attribute_name, value_type(new_value))
+                obj_to_update.__class__.__dict__[key] = value_type(new_value)
             else:
-                setattr(obj_to_update, attribute_name, new_value)
+                obj_to_update.__class__.__dict__[key] = new_value
         storage.save()
 
 
