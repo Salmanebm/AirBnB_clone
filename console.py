@@ -105,5 +105,18 @@ class HBNBCommand(cmd.Cmd):
             del storage.all()[object_key]
             storage.save()
 
+    def do_all(self, arg):
+        """
+        Prints all string representation of all instances,
+        based or not on the class name.
+        """
+        obj_list = []
+        for value in storage.all().values():
+            if not arg or arg == value.__class__.__name__:
+                obj_list.append(str(value))
+
+        print(obj_list)
+
+
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
