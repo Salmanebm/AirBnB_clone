@@ -150,7 +150,13 @@ class HBNBCommand(cmd.Cmd):
             print("** no instance found **")
 
         obj_to_update = all_objects[key_to_find]
-        setattr(obj_to_update, attribute_name, new_value)
+
+        for key, value in all_objects.items():
+            if key in obj_to_update.__class__.__dict__.keys():
+                value_type = type(obj_to_update.__class__.__dict__[key])
+                setattr(obj_to_update, attribute_name, value_type(new_value))
+            else:
+                setattr(obj_to_update, attribute_name, new_value)
         storage.save()
 
 
