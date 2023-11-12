@@ -50,8 +50,8 @@ class HBNBCommand(cmd.Cmd):
         and prints the id.
         """
         if arg:
-            if arg == "BaseModel":
-                base_model_instance = BaseModel()
+            if arg in HBNBCommand.__classes:
+                base_model_instance = eval(arg())
                 base_model_instance.save()
                 print(base_model_instance.id)
             else:
