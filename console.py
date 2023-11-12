@@ -3,16 +3,28 @@
 This module has the entry point to the command interpreter
 """
 import cmd
+import json
 import sys
 from models.base_model import BaseModel
+from models import storage
 
 
-class HBBNCommand(cmd.Cmd):
+class HBNBCommand(cmd.Cmd):
     """
     Represents command interpreter class
     """
     prompt = '(hbnb) '
     misc_header = 'This is misc_header test'
+
+    __classes = {
+        "BaseModel",
+        "User",
+        "Amenity",
+        "City",
+        "Place",
+        "Review",
+        "State"
+    }
 
     def do_quit(self, arg):
         """
@@ -47,6 +59,29 @@ class HBBNCommand(cmd.Cmd):
         else:
             print("** class name missing **")
 
+    def do_show(self, line):
+        """
+        Prints the string representation of an instance based on
+        the class name and id.
+        """
+        args = line.split()
+        if len(args) == 0:
+            print("** class name missing **")
+            return
+        elif len(args) == 1:
+            if args[0] not in HBNBCommand.__classes:
+                print("** class doesn't exist **")
+                return
+            print("** instance id missing **")
+            return
+
+        all_objects = storage.all()
+        object_key = f"{args[0]}.{args[1]}"
+        if object_key not in all_objects.keys():
+            print("** no instance found **")
+        else:
+            print(all_objects[object_key])
+
 
 if __name__ == "__main__":
-    HBBNCommand().cmdloop()
+    HBNBCommand().cmdloop()
