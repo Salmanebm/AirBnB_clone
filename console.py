@@ -139,11 +139,18 @@ class HBNBCommand(cmd.Cmd):
             print("** value missing **")
             return
 
-        for value in storage.all().values():
-            if args[2] in ["id", "created_at", "updated_at"]:
-                return
-            value[args[2]] = args[3]
+        class_name = args[0]
+        instance_id = args[1]
+        attribute_name = args[2]
+        new_value = args[3]
+        key_to_find = f"{class_name}.{instance_id}"
+        all_objects = storage.all()
 
+        if key_to_find not in all_objects:
+            print("** no instance found **")
+
+        obj_to_update = all_objects[key_to_find]
+        setattr(obj_to_update, attribute_name, new_value)
         storage.save()
 
 
