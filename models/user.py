@@ -2,8 +2,6 @@
 """
 This module has the User class
 """
-from datetime import datetime
-
 from models.base_model import BaseModel
 
 
