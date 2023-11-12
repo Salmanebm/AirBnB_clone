@@ -58,8 +58,8 @@ class BaseModel:
         """
         dict_copy = self.__dict__
         dict_copy["__class__"] = str(self.__class__.__name__)
-        # if isinstance(dict_copy["created_at"], datetime):
-        dict_copy["created_at"] = str(self.created_at.isoformat())
-        # if isinstance(dict_copy["updated_at"], datetime):
-        dict_copy["updated_at"] = str(self.updated_at.isoformat())
+        if isinstance(dict_copy["created_at"], datetime):
+            dict_copy["created_at"] = str(self.created_at.isoformat())
+        if isinstance(dict_copy["updated_at"], datetime):
+            dict_copy["updated_at"] = str(self.updated_at.isoformat())
         return dict_copy
