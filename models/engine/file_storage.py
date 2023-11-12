@@ -33,7 +33,7 @@ class FileStorage:
         Sets in __objects the obj with key <obj class name>.id
         """
         obj_key = "{}.{}".format(obj.__class__.__name__, obj.id)
-        FileStorage.__objects[obj_key] = obj.to_dict()
+        FileStorage.__objects[obj_key] = obj
 
     def save(self):
         """
