@@ -3,32 +3,40 @@
 This module has the entry point to the command interpreter
 """
 import cmd
+import json
+import sys
+from models.base_model import BaseModel
+from models import storage
 
 
-class HBBNCommand(cmd.Cmd):
+class HBNBCommand(cmd.Cmd):
     """
     Represents command interpreter class
     """
     prompt = '(hbnb) '
+    misc_header = 'This is misc_header test'
 
-    def do_help(self, arg):
-        """
-        Represents the help command
-        """
-        commands = {
-            "EOF": "end of file",
-            "help": "help command to show description of each command",
-            "quit": "Quit command to exit the program"
-        }
+    __classes = {
+        "BaseModel",
+        "User",
+        "Amenity",
+        "City",
+        "Place",
+        "Review",
+        "State"
+    }
 
-        if arg:
-            print(f"{commands[arg]}\n")
-        else:
-            print("\n" + "Documented commands (type help <topic>):")
-            print("========================================")
-            for command in commands.keys():
-                print(f"{command}", end="  ")
-            print("\n")
+    def do_quit(self, arg):
+        """
+        Quit command to quit the program
+        """
+        return True
+
+    def do_EOF(self, arg):
+        """
+        EOF to exit the program
+        """
+        sys.exit()
 
     def emptyline(self):
         """
@@ -36,6 +44,44 @@ class HBBNCommand(cmd.Cmd):
         """
         return False
 
+    def do_create(self, arg):
+        """
+        Creates a new instance of BaseModel, saves it (to the JSON file)
+        and prints the id.
+        """
+        if arg:
+            if arg == "BaseModel":
+                base_model_instance = BaseModel()
+                base_model_instance.save()
+                print(base_model_instance.id)
+            else:
+                print("** class doesn't exist **")
+        else:
+            print("** class name missing **")
+
+    def do_show(self, line):
+        """
+        Prints the string representation of an instance based on
+        the class name and id.
+        """
+        args = line.split()
+        if len(args) == 0:
+            print("** class name missing **")
+            return
+        elif len(args) == 1:
+            if args[0] not in HBNBCommand.__classes:
+                print("** class doesn't exist **")
+                return
+            print("** instance id missing **")
+            return
+
+        all_objects = storage.all()
+        object_key = f"{args[0]}.{args[1]}"
+        if object_key not in all_objects.keys():
+            print("** no instance found **")
+        else:
+            print(all_objects[object_key])
+
 
 if __name__ == "__main__":
-    HBBNCommand().cmdloop()
+    HBNBCommand().cmdloop()
