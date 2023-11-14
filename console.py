@@ -119,7 +119,7 @@ class HBNBCommand(cmd.Cmd):
 
         obj_list = []
         for value in storage.all().values():
-            if not args or args == value.__class__.__name__:
+            if args[0] == value.__class__.__name__:
                 obj_list.append(str(value))
 
         print(obj_list)
