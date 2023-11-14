@@ -113,16 +113,17 @@ class HBNBCommand(cmd.Cmd):
         based or not on the class name.
         """
         args = line.split()
-        if len(args) == 1 and args[0] not in HBNBCommand.__classes:
+        if len(args) > 0 and args[0] not in HBNBCommand.__classes:
             print("** class doesn't exist **")
-            return
+        else:
+            obj_list = []
+            for value in storage.all().values():
+                if len(args) > 0 and args[0] == value.__class__.__name__:
+                    obj_list.append(str(value))
+                elif len(args) == 0:
+                    obj_list.append(str(value))
+            print(obj_list)
 
-        obj_list = []
-        for value in storage.all().values():
-            if args[0] == value.__class__.__name__:
-                obj_list.append(str(value))
-
-        print(obj_list)
 
     def do_update(self, line):
         """
