@@ -98,12 +98,13 @@ class HBNBCommand(cmd.Cmd):
         if len(args) == 0:
             print("** class name missing **")
             return
-        elif len(args) <= 2:
+        elif len(args) in (1, 2):
             if args[0] not in HBNBCommand.__classes:
                 print("** class doesn't exist **")
                 return
-            print("** instance id missing **")
-            return
+            if len(args) != 2:
+                print("** instance id missing **")
+                return
 
         object_key = f"{args[0]}.{args[1]}"
         if object_key not in storage.all():
