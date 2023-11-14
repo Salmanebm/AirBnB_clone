@@ -127,40 +127,33 @@ class HBNBCommand(cmd.Cmd):
         args = line.split()
         if len(args) == 0:
             print("** class name missing **")
-            return
+        elif args[0] not in HBNBCommand.__classes:
+            print("** class doesn't exist **")
         elif len(args) == 1:
-            if args[0] not in HBNBCommand.__classes:
-                print("** class doesn't exist **")
-                return
             print("** instance id missing **")
-            return
+        elif f"{args[0]}.{args[1]}" not in storage.all():
+            print("** no instance found **")
         elif len(args) == 2:
-            print("** attribute name missing **")
-            return
+            print("** no instance found **")
         elif len(args) == 3:
             print("** value missing **")
-            return
+        else:
+            class_name = args[0]
+            instance_id = args[1]
+            attribute_name = args[2]
+            new_value = args[3]
+            key_to_find = f"{class_name}.{instance_id}"
+            all_objects = storage.all()
 
-        class_name = args[0]
-        instance_id = args[1]
-        attribute_name = args[2]
-        new_value = args[3]
-        key_to_find = f"{class_name}.{instance_id}"
-        all_objects = storage.all()
+            obj_to_update = all_objects[key_to_find]
 
-        if key_to_find not in all_objects:
-            print("** no instance found **")
-            return
-
-        obj_to_update = all_objects[key_to_find]
-
-        for key, value in all_objects.items():
-            if key in obj_to_update.__class__.__dict__.keys():
-                value_type = type(obj_to_update.__class__.__dict__[key])
-                obj_to_update.__class__.__dict__[key] = value_type(new_value)
-            else:
-                obj_to_update.__class__.__dict__[key] = new_value
-        storage.save()
+            for key, value in all_objects.items():
+                if key in obj_to_update.__class__.__dict__.keys():
+                    value_type = type(obj_to_update.__class__.__dict__[key])
+                    obj_to_update.__class__.__dict__[key] = value_type(new_value)
+                else:
+                    obj_to_update.__class__.__dict__[key] = new_value
+            storage.save()
 
 
 if __name__ == "__main__":
