@@ -98,7 +98,7 @@ class HBNBCommand(cmd.Cmd):
         elif f"{args[0]}.{args[1]}" not in storage.all():
             print("** no instance found **")
         else:
-            del storage.all()[object_key]
+            del storage.all()[f"{args[0]}.{args[1]}"]
             storage.save()
 
     def do_all(self, line):
