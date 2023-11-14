@@ -150,6 +150,7 @@ class HBNBCommand(cmd.Cmd):
 
         if key_to_find not in all_objects:
             print("** no instance found **")
+            return
 
         obj_to_update = all_objects[key_to_find]
 
