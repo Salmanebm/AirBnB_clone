@@ -138,21 +138,7 @@ class HBNBCommand(cmd.Cmd):
         elif len(args) == 3:
             print("** value missing **")
         else:
-            class_name = args[0]
-            instance_id = args[1]
-            attribute_name = args[2]
-            new_value = args[3]
-            key_to_find = f"{class_name}.{instance_id}"
-            all_objects = storage.all()
-
-            # for key, value in all_objects.items():
-            #     if key == key_to_find:
-            #         value_type = type(value[attribute_name])
-            #         value[attribute_name] = value_type(new_value)
-            #     else:
-            #         if key == key_to_find:
-            #             value[attribute_name] = new_value
-            setattr(all_objects[key_to_find], attribute_name, new_value)
+            setattr(storage.all()[f"{args[0]}.{args[1]}"], args[2], args[3])
             storage.save()
 
 
